@@ -114,8 +114,7 @@ create table public.trend_keywords (
   source_language text not null check (source_language in ('zh-MY', 'en-MY', 'ms-MY')),
   malaysia_region text not null,
   created_by uuid not null references auth.users(id),
-  created_at timestamptz not null default now(),
-  unique (workspace_id, lower(keyword), malaysia_region)
+  created_at timestamptz not null default now()
 );
 
 create table public.trend_snapshots (
@@ -365,6 +364,7 @@ create table public.workspace_settings (
 );
 
 create index workspace_members_user_idx on public.workspace_members(user_id, workspace_id) where status = 'active';
+create unique index trend_keywords_unique_idx on public.trend_keywords(workspace_id, lower(keyword), malaysia_region);
 create index facebook_url_library_workspace_idx on public.facebook_url_library(workspace_id, created_at desc);
 create index trend_evidence_expiry_idx on public.trend_evidence(workspace_id, expires_at, status);
 create index trend_opportunities_expiry_idx on public.trend_opportunities(workspace_id, expires_at, status);
