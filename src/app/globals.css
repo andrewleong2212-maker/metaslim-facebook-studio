@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+* { border-color: #E5EAF6; }
+html { overflow-x: hidden; background: #F5F7FC; }
+body { overflow-x: hidden; color: #18213F; background: #F5F7FC; font-family: Arial, "Microsoft YaHei", "PingFang SC", sans-serif; }
+button, input, textarea, select { outline-color: #4058C8; }
+::selection { background: #CBD7FA; color: #18213F; }
+
+@layer components {
+  .surface { @apply min-w-0 rounded-2xl border border-brand-100/80 bg-white shadow-soft; }
+  .field { @apply min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-sm text-ink transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-100; }
+  .label { @apply mb-2 block text-sm font-semibold text-slate-700; }
+  .primary-button { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 text-sm font-semibold text-white transition hover:bg-brand-700 focus:ring-4 focus:ring-brand-200 disabled:cursor-not-allowed disabled:bg-slate-300; }
+  .secondary-button { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-brand-200 bg-white px-4 text-sm font-semibold text-brand-700 transition hover:bg-brand-50 focus:ring-4 focus:ring-brand-100; }
+}

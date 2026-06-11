@@ -4,14 +4,26 @@
 
 ## 当前状态
 
-当前为 **STEP 1：规划与基础规格**。仓库只包含文档和环境变量模板：
+**STEP 1：规划与基础规格** 已完成。**STEP 2：基础项目与 UI 骨架** 已建立：
 
-- 不连接 Facebook、Google Trends、OpenAI、Supabase 或 Netlify。
+- Next.js App Router、strict TypeScript、Tailwind CSS、可复用 UI components、React Hook Form、Zod、Vitest、Playwright 与 Netlify 配置。
+- Dashboard、Facebook Research、Malaysia Trend Radar、Content Materials、Content Generator、Script Studio、Production Board、Facebook Performance、Weekly AI Review、Settings 共 10 个页面。
+- Desktop sidebar、Mobile bottom navigation、Loading/Empty/Error 与真实 disconnected states。
+- 不连接 Facebook、Google Trends、OpenAI 或 Supabase；Netlify 仅完成构建配置。
 - 不包含真实 API Key。
 - 不使用假趋势数据。
 - 不使用假案例、假数字，也不在资料不足时直接生成 30 天内容。
 - 不声称能够读取全马 Facebook Organic Trending API。
-- 不开发 UI 或完整功能。
+- 不包含真实后台、数据库或 AI 功能。
+
+## 本地运行
+
+```bash
+npm install
+npm run dev
+```
+
+验证命令：`npm run lint`、`npm run typecheck`、`npm run test`、`npm run build`。
 
 ## 核心原则
 
