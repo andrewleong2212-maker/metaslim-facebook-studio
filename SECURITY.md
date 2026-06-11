@@ -2,7 +2,7 @@
 
 ## 安全边界
 
-- 浏览器只可取得 `NEXT_PUBLIC_SUPABASE_URL` 与 `NEXT_PUBLIC_SUPABASE_ANON_KEY`。
+- 浏览器只可取得 `NEXT_PUBLIC_SUPABASE_URL`，以及 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` 或 legacy `NEXT_PUBLIC_SUPABASE_ANON_KEY`。
 - `SUPABASE_SERVICE_ROLE_KEY` 只能由带 `server-only` 的模块读取，不可进入 Client Component、localStorage、日志或 Git。
 - 所有写入由 Next.js Server Actions 接收，并先经过 Zod 验证；数据库 RLS 与 trigger 是最终授权边界。
 - 未配置 Supabase 时，应用显示设置提示并保持 UI 可预览，不建立假 API response。

@@ -20,11 +20,13 @@ npm run dev
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+# Legacy fallback when the project still uses an anon key:
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 ```
 
-`SUPABASE_SERVICE_ROLE_KEY` 只能放在本地未追踪环境文件、Netlify server secret 或其他服务器 secret store。浏览器只使用 URL 与 anon key，数据边界由 RLS 保证。
+浏览器 key 优先读取 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`，缺少时才回退到 `NEXT_PUBLIC_SUPABASE_ANON_KEY`。两者只需配置一个。`SUPABASE_SERVICE_ROLE_KEY` 只能放在本地未追踪环境文件、Netlify server secret 或其他服务器 secret store，不会传入浏览器 bundle；数据边界由 RLS 保证。修改 `.env.local` 后必须重新启动 Next.js dev server。
 
 ## 执行 Migration
 
