@@ -1,2 +1,3 @@
 import { ResearchForm } from "@/features/facebook-research/research-form";
-export default function Page(){return <ResearchForm/>}
+import { FacebookLibraryPanel } from "@/components/data/facebook-library-panel";
+export default function Page(){return <><ResearchForm/><FacebookLibraryPanel/></>}

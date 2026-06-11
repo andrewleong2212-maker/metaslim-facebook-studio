@@ -1,0 +1,5 @@
+-- Intentionally empty.
+-- STEP 3 does not seed fake trends, Facebook posts, performance metrics,
+-- customer cases, evidence, scripts, or usage data.
+-- Create the first authenticated user in Supabase Auth, then use the
+-- create_workspace RPC from the application to bootstrap MetaSlim AI safely.

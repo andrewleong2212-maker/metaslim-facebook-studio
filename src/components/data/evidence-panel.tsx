@@ -1,0 +1,17 @@
+import { createEvidenceAction, reviewEvidenceAction } from "@/app/actions/evidence";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { getWorkspaceContext } from "@/lib/auth/context";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { SupabaseSetupNotice, WorkspaceSetup } from "./data-state";
+
+export async function EvidencePanel() {
+  if (!isSupabaseConfigured()) return <SupabaseSetupNotice/>;
+  const context = await getWorkspaceContext();
+  if (!context?.membership) return <WorkspaceSetup/>;
+  const workspaceId = context.membership.workspace_id;
+  const role = context.membership.role;
+  const canReview = role === "admin" || role === "reviewer";
+  const { data } = await context.supabase.from("trend_evidence").select("id,source_url,human_summary,malaysia_region,observed_at,expires_at,status,freshness_status").eq("workspace_id", workspaceId).order("created_at", { ascending: false }).limit(50);
+  const today = new Date().toISOString().slice(0, 10);
+  return <div className="mt-6 grid gap-5 xl:grid-cols-[.9fr_1.1fr]"><Card><CardHeader><h2 className="font-semibold">加入真实趋势证据</h2></CardHeader><CardContent><form action={createEvidenceAction} className="space-y-3"><input type="hidden" name="workspaceId" value={workspaceId}/><input name="sourceUrl" type="url" required className="field" placeholder="真实来源 URL"/><textarea name="summary" required className="field min-h-24 py-3" placeholder="人工观察摘要，不得制造结论"/><input name="region" required className="field" placeholder="Malaysia 地区，例如 Selangor"/><label className="block"><span className="label">观察日期</span><input name="observedAt" type="date" max={today} required className="field"/></label><label className="block"><span className="label">有效期至</span><input name="expiresAt" type="date" min={today} required className="field"/></label><button className="primary-button w-full">保存为 Unverified</button></form></CardContent></Card><Card><CardHeader><div><h2 className="font-semibold">Manual Evidence Review</h2><p className="mt-1 text-xs text-slate-500">只有 reviewer / admin 能核实；系统不能自行标记 Verified。</p></div></CardHeader><CardContent><div className="divide-y divide-slate-100">{data?.length ? data.map((row) => <article key={row.id} className="py-4 first:pt-0"><div className="flex flex-wrap justify-between gap-2"><a href={row.source_url} target="_blank" rel="noreferrer" className="font-medium text-brand-700">{row.human_summary}</a><span className="text-xs text-slate-500">{row.status} · {row.freshness_status}</span></div><p className="mt-1 text-xs text-slate-500">{row.malaysia_region} · 到期 {new Date(row.expires_at).toLocaleDateString("zh-MY")}</p>{canReview && row.status !== "expired" && <form action={reviewEvidenceAction} className="mt-3 grid gap-2 sm:grid-cols-4"><input type="hidden" name="workspaceId" value={workspaceId}/><input type="hidden" name="evidenceId" value={row.id}/><select name="decision" className="field"><option value="verified">Verified</option><option value="needs_more_evidence">需要更多证据</option><option value="rejected">Rejected</option></select><input name="credibilityRating" type="number" min="1" max="5" defaultValue="3" className="field" aria-label="可信度"/><input name="locationRelevance" type="number" min="1" max="5" defaultValue="3" className="field" aria-label="地区相关性"/><input name="notes" required className="field" placeholder="审核理由"/><button className="secondary-button sm:col-span-4">提交人工审核</button></form>}</article>) : <p className="py-5 text-sm text-slate-500">没有真实证据，因此不会显示趋势。</p>}</div></CardContent></Card></div>;
+}

@@ -1,20 +1,13 @@
 # MetaSlim AI Facebook Trend & Content Studio
 
-固定服务 MetaSlim AI、固定面向 Malaysia 市场的趋势证据与 Facebook 内容生产工作台。它将真实来源、人工证据审核、马来西亚口语华文 AIDA 文案、质量与合规门禁、人工批准、版本历史和 Production Board 串成可审计流程；不提供多品牌或其他国家市场选择。
+MetaSlim AI 是固定面向 Malaysia 市场的 Facebook 趋势证据与内容生产工作台。默认内容语言为马来西亚口语华文；English 与 Bahasa Melayu 只用于研究辅助。系统不声称拥有全马 Facebook Organic Trending API，也不会以假趋势、假案例或假数字填充界面。
 
-## 当前状态
+## 当前进度
 
-**STEP 1：规划与基础规格** 已完成。**STEP 2：基础项目与 UI 骨架** 已建立：
-
-- Next.js App Router、strict TypeScript、Tailwind CSS、可复用 UI components、React Hook Form、Zod、Vitest、Playwright 与 Netlify 配置。
-- Dashboard、Facebook Research、Malaysia Trend Radar、Content Materials、Content Generator、Script Studio、Production Board、Facebook Performance、Weekly AI Review、Settings 共 10 个页面。
-- Desktop sidebar、Mobile bottom navigation、Loading/Empty/Error 与真实 disconnected states。
-- 不连接 Facebook、Google Trends、OpenAI 或 Supabase；Netlify 仅完成构建配置。
-- 不包含真实 API Key。
-- 不使用假趋势数据。
-- 不使用假案例、假数字，也不在资料不足时直接生成 30 天内容。
-- 不声称能够读取全马 Facebook Organic Trending API。
-- 不包含真实后台、数据库或 AI 功能。
+- STEP 1：产品规格与架构完成。
+- STEP 2：Next.js App Router、TypeScript、Tailwind、10 个响应式页面与 UI 骨架完成。
+- STEP 3：Supabase schema、Auth、RLS、Server Actions、真实 CRUD、Human Approval、Version History、Source Expiry、Manual Evidence Review、Facebook URL Library、Cost Control、Error Log 与 Audit Log 已在本地代码实现。
+- 尚未把 Migration 执行到远端 Supabase，也未连接 OpenAI、Facebook API 或 Google Trends。
 
 ## 本地运行
 
@@ -23,39 +16,54 @@ npm install
 npm run dev
 ```
 
-验证命令：`npm run lint`、`npm run typecheck`、`npm run test`、`npm run build`。
+需要的 Supabase 环境变量：
 
-## 核心原则
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+```
 
-1. Evidence first：趋势与事实主张必须有可追溯、未过期的来源。
-2. Human in control：AI 不能批准或发布内容。
-3. Malaysia fixed：最终输出固定为 `zh-MY` 马来西亚口语华文；English/Bahasa Melayu 只作趋势研究辅助来源。
-4. Secure by default：密钥仅在服务端，RLS、最小权限、审计和脱敏为基础要求。
-5. Cost visible：每次 AI 操作先估算、后记录并受预算限制。
-6. No fabricated trends：未验证线索明确标示，不以模拟数据冒充真实趋势。
+`SUPABASE_SERVICE_ROLE_KEY` 只能放在本地未追踪环境文件、Netlify server secret 或其他服务器 secret store。浏览器只使用 URL 与 anon key，数据边界由 RLS 保证。
 
-## 必需模块
+## 执行 Migration
 
-AI Output Quality Gate、Human Approval、Version History、Source Expiry、Manual Evidence Review、Facebook URL Library、Facebook Page URL 的 Codex/Claude 资料整理 Prompt、马来西亚口语华文规则、Trend Location、Cost Control、Error Logging、AIDA Copywriting Formula 与 AIDA Mindset、Duplicate Guard、Compliance Checker、Production Board、资料充分性检查和最终文案交付门禁。
+本仓库没有自动连接任何远端项目。确认项目 ref 后，由项目管理员手动执行：
 
-## 文档导航
+```bash
+npx supabase login
+npx supabase link --project-ref YOUR_PROJECT_REF
+npx supabase db push
+```
 
-- [PRODUCT_SPEC.md](PRODUCT_SPEC.md)：目标、用户流程、页面、正式需求、外部服务与限制
-- [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)：Phase 1-3、验收标准和依赖
-- [ARCHITECTURE.md](ARCHITECTURE.md)：系统边界、目录、组件与数据流
-- [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md)：数据表、字段、关系、状态和 RLS 原则
-- [SECURITY.md](SECURITY.md)：威胁、安全控制、密钥与日志规范
-- [.env.example](.env.example)：无秘密的环境变量名称模板
+Migration 顺序：
 
-## 建议技术方向
+1. `202606110001_core_schema.sql`
+2. `202606110002_workflow_controls.sql`
+3. `202606110003_rls_policies.sql`
 
-规划基线为 TypeScript Web 应用、Netlify 部署层、Supabase Auth/Postgres/Storage、服务端 AI/provider adapters。具体前端框架在 Phase 1 开始前通过小型技术验证确认；目录以 provider abstraction 为核心，避免业务逻辑直接依赖任何 API。
+`supabase/seed.sql` 有意保持空白，不会写入假趋势、Facebook 数据、案例或表现数字。完成 Migration 后，在 Supabase Auth 建立第一个用户并登录；应用会通过 `create_workspace` RPC 建立 MetaSlim AI workspace、admin membership、brand profile 与 settings。
 
-## 开发前置条件
+## 验证
 
-- 确认品牌语言、法定声明与禁止表达。
-- 确认允许使用的趋势来源、数据保留期和证据版权政策。
-- 确认 Supabase 区域、Netlify 计划、OpenAI 预算和 Facebook App 权限范围。
-- 为 development、preview、production 建立完全隔离的配置。
+```bash
+npm run lint
+npm run typecheck
+npm run test
+npm run build
+```
 
-详见各规格文件。本步骤完成后停止，不继续开发 UI。
+远端 RLS、Auth 邮件流程与数据库触发器需要在 Migration 实际推送后另行做 integration test。本阶段不会假装这些远端测试已执行。
+
+## 安全与产品原则
+
+1. 所有业务表启用 RLS，用户只可访问自己的 active workspace。
+2. 角色固定为 `admin`、`editor`、`reviewer`、`viewer`。
+3. Evidence 只能由 reviewer/admin 人工审核；系统不能自行标记 Verified。
+4. Script 只有 reviewer/admin 可批准；High Risk 或未通过 Quality/Compliance 的版本不能 Approved。
+5. 未批准版本不能进入 Filming，未 Ready 内容不能 Published。
+6. Version、Approval、Evidence Review 与 Audit 均为 append-only。
+7. 趋势证据必须包含真实 URL、Malaysia 地区、观察日期与 `expires_at`。
+8. AI 目前禁用；没有任何假 API response。
+
+详细设计见 [PRODUCT_SPEC.md](PRODUCT_SPEC.md)、[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)、[ARCHITECTURE.md](ARCHITECTURE.md)、[DATABASE_SCHEMA.md](DATABASE_SCHEMA.md) 与 [SECURITY.md](SECURITY.md)。
