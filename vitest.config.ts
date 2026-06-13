@@ -3,6 +3,6 @@ import path from "node:path";
 
 export default defineConfig({
   esbuild: { jsx: "automatic" },
-  resolve: { alias: { "@": path.resolve(__dirname, "src") } },
-  test: { environment: "jsdom", setupFiles: ["./src/test/setup.ts"], include: ["src/**/*.test.{ts,tsx}"] },
+  resolve: { alias: { "@": path.resolve(__dirname, "src"), "server-only": path.resolve(__dirname, "src/test/server-only-stub.ts") } },
+  test: { environment: "jsdom", setupFiles: ["./src/test/setup.ts"], include: ["src/**/*.test.{ts,tsx}", "tests/unit/**/*.test.ts", "tests/integration/**/*.test.ts"] },
 });
